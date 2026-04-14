@@ -163,7 +163,10 @@
         function faviconUrl(url) {
             try {
                 const domain = new URL(url).hostname;
-                return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+                if (domain.endsWith('.sharepoint.com')) {
+                    return 'https://res.cdn.office.net/files/fabric-cdn-prod_20230815.002/assets/brand-icons/product/svg/sharepoint_32x1.svg';
+                }
+                return `https://icons.duckduckgo.com/ip3/${domain}.ico`;
             } catch {
                 return null;
             }
