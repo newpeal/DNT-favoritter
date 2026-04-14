@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNT Bokmerker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            padding: 20px 24px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .bookmark-list {
+            list-style: none;
+        }
+
+        .bookmark-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            text-decoration: none;
+            color: #333;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background 0.15s;
+        }
+
+        .bookmark-link:hover {
+            background: #f8f8f8;
+        }
+
+        .bookmark-link:last-child {
+            border-bottom: none;
+        }
+
+        .favicon {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            border-radius: 4px;
+        }
+
+        .favicon-fallback {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .bookmark-name {
+            font-size: 0.95rem;
+        }
+
+        details {
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        details:last-child {
+            border-bottom: none;
+        }
+
+        summary {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: background 0.15s;
+            list-style: none;
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary:hover {
+            background: #f8f8f8;
+        }
+
+        summary .arrow {
+            margin-left: auto;
+            font-size: 0.75rem;
+            color: #999;
+            transition: transform 0.2s;
+        }
+
+        details[open] summary .arrow {
+            transform: rotate(90deg);
+        }
+
+        .folder-icon {
+            width: 24px;
+            height: 24px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .children-list {
+            list-style: none;
+        }
+
+        .children-list .bookmark-link {
+            padding-left: 48px;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 12px;
+            }
+
+            .bookmark-link {
+                padding: 10px 16px;
+            }
+
+            summary {
+                padding: 10px 16px;
+            }
+
+            .children-list .bookmark-link {
+                padding-left: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="app"></div>
+
+    <script>
+        function faviconUrl(url) {
+            try {
+                const domain = new URL(url).hostname;
+                return `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+            } catch {
+                return null;
+            }
+        }
+
+        function nameToColor(name) {
+            let hash = 0;
+            for (let i = 0; i < name.length; i++) {
+                hash = name.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            const hue = Math.abs(hash) % 360;
+            return `hsl(${hue}, 55%, 50%)`;
+        }
+
+        function handleFaviconError(img, name) {
+            const fallback = document.createElement('span');
+            fallback.className = 'favicon-fallback';
+            fallback.style.background = nameToColor(name);
+            fallback.textContent = name.charAt(0).toUpperCase();
+            img.replaceWith(fallback);
+        }
+
+        function createBookmarkLink(item) {
+            const a = document.createElement('a');
+            a.className = 'bookmark-link';
+            a.href = item.url;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+
+            const src = faviconUrl(item.url);
+            if (src) {
+                const img = document.createElement('img');
+                img.className = 'favicon';
+                img.src = src;
+                img.alt = '';
+                img.loading = 'lazy';
+                img.onerror = () => handleFaviconError(img, item.name);
+                a.appendChild(img);
+            }
+
+            const span = document.createElement('span');
+            span.className = 'bookmark-name';
+            span.textContent = item.name;
+            a.appendChild(span);
+
+            return a;
+        }
+
+        function createFolder(item) {
+            const details = document.createElement('details');
+
+            const summary = document.createElement('summary');
+
+            const folderIcon = document.createElement('span');
+            folderIcon.className = 'folder-icon';
+            folderIcon.textContent = '\uD83D\uDCC1';
+            summary.appendChild(folderIcon);
+
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'bookmark-name';
+            nameSpan.textContent = item.name;
+            summary.appendChild(nameSpan);
+
+            const arrow = document.createElement('span');
+            arrow.className = 'arrow';
+            arrow.textContent = '\u25B6';
+            summary.appendChild(arrow);
+
+            details.appendChild(summary);
+
+            const childList = document.createElement('ul');
+            childList.className = 'children-list';
+            for (const child of item.children) {
+                const li = document.createElement('li');
+                li.appendChild(createBookmarkLink(child));
+                childList.appendChild(li);
+            }
+            details.appendChild(childList);
+
+            return details;
+        }
+
+        function render(bookmarks) {
+            const app = document.getElementById('app');
+            let title = 'Bokmerker';
+
+            for (const item of bookmarks) {
+                if (item.toplevel_name) {
+                    title = item.toplevel_name;
+                }
+            }
+
+            const h1 = document.createElement('h1');
+            h1.textContent = title;
+            app.appendChild(h1);
+
+            const list = document.createElement('ul');
+            list.className = 'bookmark-list';
+
+            for (const item of bookmarks) {
+                if (item.toplevel_name) continue;
+
+                if (item.children) {
+                    list.appendChild(createFolder(item));
+                } else {
+                    const li = document.createElement('li');
+                    li.appendChild(createBookmarkLink(item));
+                    list.appendChild(li);
+                }
+            }
+
+            app.appendChild(list);
+        }
+
+        fetch('bookmarks.json')
+            .then(res => res.json())
+            .then(render);
+    </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+[
+    {
+        "toplevel_name": "DNT-favoritter"
+    },
+    {
+        "url": "https://claude.ai/",
+        "name": "Claude"
+    },
+    {
+        "url": "https://m365.cloud.microsoft/chat",
+        "name": "Copilot"
+    },
+    {
+        "url": "https://go.poweroffice.net/",
+        "name": "PowerOffice"
+    },
+    {
+        "url": "https://app.powerbi.com/Redirect?action=OpenApp&appId=0298d969-1212-46fe-9867-9d05f2b5c6a1&ctid=48c8cd81-8526-4036-95e1-46d891d1bc66&experience=power-bi&language=nb",
+        "name": "Power BI"
+    },
+    {
+        "url": "https://www.dnt.no/oslo/fakturamottak",
+        "name": "Fakturamottak"
+    },
+    {
+        "url": "https://handboker.sticos.no/viewer/handbooks/employee/view/cb7f1a52-f6b5-4db7-7ea3-08de34493361?language=nb-NO",
+        "name": "Sticos personalhåndbok"
+    },
+    {
+        "url": "https://dennorsketuristforening.sharepoint.com/sites/OsloNett",
+        "name": "Infonett"
+    },
+    {
+        "url": "https://dennorsketuristforening.sharepoint.com/sites/Foreningsnett",
+        "name": "Foreningsnett"
+    },
+    {
+        "url": "https://www.dnt.no/",
+        "name": "DNT.no"
+    },
+    {
+        "url": "https://www.dnt.no/oslo",
+        "name": "DNT.no/oslo"
+    },
+    {
+        "url": "https://trygg.dnt.no",
+        "name": "DNT Trygg"
+    },
+    {
+        "url": "https://aktiviteter.dnt.no/arrangement",
+        "name": "Aktivitetssystemet"
+    },
+    {
+        "url": "https://motimate.app/dnt/signin",
+        "name": "Motimate (nettkurs)"
+    },
+    {
+        "url": "https://bildearkiv.dnt.no/fotoweb/views/login",
+        "name": "Fotoweb"
+    },
+    {
+        "name": "Frivilligsystemet",
+        "children": [
+            {
+                "url": "https://dnt.mobilise.no",
+                "name": "Pålogging admin"
+            },
+            {
+                "url": "https://dnt.mobilise.no/mobile",
+                "name": "Pålogging frivillig"
+            }
+        ]
+    }
+]
